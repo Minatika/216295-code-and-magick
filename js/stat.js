@@ -21,12 +21,12 @@ var shadowParams = {
 var textParams = {
   TEXT: 'Ура вы победили!\nСписок результатов:',
   FONT: '16px PT Mono',
-  color: '#000000',
-  lineheight: 20,
-  x: cloudParams.X + 20,
-  y: cloudParams.Y + 30,
-  maxWidth: cloudParams.WIDTH - 40,
-  height: 40
+  COLOR: '#000000',
+  LINE_HEIGHT: 20,
+  X: cloudParams.X + 20,
+  Y: cloudParams.Y + 30,
+  MAX_WIDTH: cloudParams.WIDTH - 40,
+  HEIGHT: 40
 };
 
 var barParams = {
@@ -34,7 +34,9 @@ var barParams = {
   COLUMN_WIDTH: 40,
   COLUMN_GAP: 50,
   COLOR_YOUR: 'rgba(255, 0, 0, 1)',
-  x: cloudParams.X + 40
+  X: cloudParams.X + 40,
+  COLUMN_OPACITY_MIN: 0.1,
+  COLUMN_OPACTIY_MAX: 1
 };
 
 // функция рисования облака
@@ -57,7 +59,7 @@ var renderCloud = function (ctx, cloud) {
 // функция рисования текста
 var drawText = function (ctx, text) {
   var lines = text.TEXT.split('\n');
-  ctx.fillStyle = text.color;
+  ctx.fillStyle = text.COLOR;
   ctx.font = text.FONT;
   for (var i = 0; i < lines.length; i++) {
     var words = lines[i].split(' ');
@@ -65,33 +67,35 @@ var drawText = function (ctx, text) {
     for (var j = 0; j < words.length; j++) {
       var testLine = line + words[j] + ' ';
       var testWidth = ctx.measureText(testLine).width;
-      if (testWidth > text.maxWidth) {
-        ctx.fillText(line, text.x, text.y);
+      if (testWidth > text.MAX_WIDTH) {
+        ctx.fillText(line, text.X, text.Y);
         line = words[j] + ' ';
-        text.y += text.lineHeight;
-        text.height += text.lineHeight;
+        text.Y += text.LINE_HEIGHT;
+        text.HEIGHT += text.LINE_HEIGHT;
       } else {
         line = testLine;
       }
     }
-    ctx.fillText(line, text.x, text.y);
-    text.y += text.lineheight;
-    text.height += text.lineheight;
+    ctx.fillText(line, text.X, text.Y);
+    text.Y += text.LINE_HEIGHT;
+    text.HEIGHT += text.LINE_HEIGHT;
   }
+};
+
+// функция расчета насыщенность цвета столбца гистограммы
+var getRandomOpacity = function (min, max) {
+  return Math.random() * (max - min) + min;
 };
 
 // функция рисования колонки гистограммы
 var drawColumn = function (ctx, bar, name, value, maxValue, number) {
-  var columnOpacity = Math.random();
-  if (columnOpacity < 0.1) {
-    columnOpacity = 0.5;
-  }
+  var columnOpacity = getRandomOpacity(bar.COLUMN_OPACITY_MIN, bar.COLUMN_OPACTIY_MAX);
   var columnHeight = Math.round(value * bar.HEIGHT / maxValue);
   ctx.fillStyle = name === 'Вы' ? bar.COLOR_YOUR : 'rgba(0, 0, 255, ' + columnOpacity + ')';
-  ctx.fillRect(bar.x + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.y + bar.HEIGHT - columnHeight, bar.COLUMN_WIDTH, columnHeight);
-  ctx.fillStyle = textParams.color;
-  ctx.fillText(Math.round(value), bar.x + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.y + bar.HEIGHT - columnHeight - 10);
-  ctx.fillText(name, bar.x + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.y + bar.HEIGHT + 20);
+  ctx.fillRect(bar.X + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.Y + bar.HEIGHT - columnHeight, bar.COLUMN_WIDTH, columnHeight);
+  ctx.fillStyle = textParams.COLOR;
+  ctx.fillText(Math.round(value), bar.X + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.Y + bar.HEIGHT - columnHeight - 10);
+  ctx.fillText(name, bar.X + number * (bar.COLUMN_GAP + bar.COLUMN_WIDTH), bar.Y + bar.HEIGHT + 20);
 };
 
 window.renderStatistics = function (ctx, names, times) {
@@ -105,7 +109,7 @@ window.renderStatistics = function (ctx, names, times) {
   var maxTime = Math.max.apply(Math, times);
 
   // добавляем гистограмме координату Y после того, как известна высота блока с текстом
-  barParams.y = cloudParams.Y + textParams.height;
+  barParams.Y = cloudParams.Y + textParams.HEIGHT;
   // рисование гистограммы
   for (var i = 0; i < times.length; i++) {
     drawColumn(ctx, barParams, names[i], times[i], maxTime, i);
