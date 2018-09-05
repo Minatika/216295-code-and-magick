@@ -10,22 +10,25 @@ var wizardsParams = {
 
 var userDialog = document.querySelector('.setup');
 var similarElement = document.querySelector('.setup-similar');
+var similarListElement = document.querySelector('.setup-similar-list');
 
 // функция получения рандомного индекса
 var getRandomIndex = function (max) {
   return Math.floor(Math.random() * max);
 };
 
+// функция-конструктор для создания мага
+function Wizard() {
+  this.name = wizardsParams.NAMES[getRandomIndex(wizardsParams.NAMES.length)] + ' ' + wizardsParams.SURNAMES[getRandomIndex(wizardsParams.SURNAMES.length)];
+  this.coatColor = wizardsParams.COAT_COLORS[getRandomIndex(wizardsParams.COAT_COLORS.length)];
+  this.eyesColor = wizardsParams.EYES_COLORS[getRandomIndex(wizardsParams.EYES_COLORS.length)];
+}
+
 // функция заполнения массива похожих персонажей
 var getWizards = function (count) {
   var arr = [];
   for (var i = 0; i < count; i++) {
-    var wizard = {
-      name: wizardsParams.NAMES[getRandomIndex(wizardsParams.NAMES.length)] + ' ' + wizardsParams.SURNAMES[getRandomIndex(wizardsParams.SURNAMES.length)],
-      coatColor: wizardsParams.COAT_COLORS[getRandomIndex(wizardsParams.COAT_COLORS.length)],
-      eyesColor: wizardsParams.EYES_COLORS[getRandomIndex(wizardsParams.EYES_COLORS.length)]
-    };
-    arr.push(wizard);
+    arr.push(new Wizard());
   }
   return arr;
 };
@@ -44,9 +47,8 @@ var renderWizard = function (wizard) {
 
 // функция отрисовки сгенерированных DOM-элементов
 var renderWizardElements = function () {
-  var wizards = getWizards(wizardsParams.COUNT);;
+  var wizards = getWizards(wizardsParams.COUNT);
   var fragment = document.createDocumentFragment();
-  var similarListElement = document.querySelector('.setup-similar-list');
   for (var i = 0; i < wizards.length; i++) {
     fragment.appendChild(renderWizard(wizards[i]));
   }
