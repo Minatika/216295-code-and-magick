@@ -17,8 +17,8 @@ var wizardsParams = {
 };
 
 var keycodes = {
-  ESC_KEYCODE: 27,
-  ENTER_KEYCODE: 13
+  ESC: 27,
+  ENTER: 13
 };
 
 var userDialog = document.querySelector('.setup');
@@ -81,9 +81,9 @@ var renderWizardElements = function () {
   similarListElement.appendChild(fragment);
 };
 
-// обработчик нажатия на Esc
+// функция-обработчик нажатия на Esc
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === keycodes.ESC_KEYCODE) {
+  if (evt.keyCode === keycodes.ESC) {
     closePopup();
   }
 };
@@ -116,7 +116,7 @@ userDialogOpen.addEventListener('click', function () {
 
 // обработчик нажатия на клавишу на блоке открытия окна
 userDialogOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === keycodes.ENTER_KEYCODE) {
+  if (evt.keyCode === keycodes.ENTER) {
     openPopup();
   }
 });
@@ -128,46 +128,40 @@ userDialogClose.addEventListener('click', function () {
 
 // обработчик нажатия на клавишу на кнопке закрыть
 userDialogClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === keycodes.ENTER_KEYCODE) {
+  if (evt.keyCode === keycodes.ENTER) {
     closePopup();
   }
 });
 
 // функция изменения цвета плаща
-var fillCoat = function () {
+var onCoatClick = function () {
   var color = wizardsParams.COAT_COLORS[getRandomIndex(wizardsParams.COAT_COLORS.length)];
   userCoat.style.fill = color;
   userCoatElement.value = color;
 };
 
 // функция изменения цвета глаз
-var fillEyes = function () {
+var onEyesClick = function () {
   var color = wizardsParams.EYES_COLORS[getRandomIndex(wizardsParams.EYES_COLORS.length)];
   userEyes.style.fill = color;
   userEyesElement.value = color;
 };
 
-// функция изменения цвета фаербола
-var fillFireball = function () {
+// функция-обработчик нажатия на фаербол
+var onFireballClick = function () {
   var color = wizardsParams.FIREBALL_COLORS[getRandomIndex(wizardsParams.FIREBALL_COLORS.length)];
   userFireball.style.background = color;
   userFireballElement.value = color;
 };
 
 // обработчик клика по плащу
-userCoat.addEventListener('click', function () {
-  fillCoat();
-});
+userCoat.addEventListener('click', onCoatClick);
 
 // обработчик клика по глазам
-userEyes.addEventListener('click', function () {
-  fillEyes();
-});
+userEyes.addEventListener('click', onEyesClick);
 
 // обработчик клика по фаерболу
-userFireball.addEventListener('click', function () {
-  fillFireball();
-});
+userFireball.addEventListener('click', onFireballClick);
 
 similarElement.classList.remove('hidden');
 renderWizardElements();
