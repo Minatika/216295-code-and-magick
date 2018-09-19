@@ -2,10 +2,6 @@
 
 // описывает взаимодействие с окном диалога
 (function () {
-  var keycodes = {
-    ESC: 27,
-    ENTER: 13
-  };
 
   var userDialog = document.querySelector('.setup');
   var userDialogOpen = document.querySelector('.setup-open');
@@ -22,9 +18,7 @@
 
   // функция-обработчик нажатия на Esc
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === keycodes.ESC) {
-      closePopup();
-    }
+    window.utils.isEscEvent(evt, closePopup);
   };
 
   // функция открывает окно персонажа
@@ -55,9 +49,7 @@
 
   // обработчик нажатия на клавишу на блоке открытия окна
   userDialogOpen.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === keycodes.ENTER) {
-      openPopup();
-    }
+    window.utils.isEnterEvent(evt, openPopup);
   });
 
   // обработчик клика на кнопке закрыть
@@ -67,28 +59,26 @@
 
   // обработчик нажатия на клавишу на кнопке закрыть
   userDialogClose.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === keycodes.ENTER) {
-      closePopup();
-    }
+    window.utils.isEnterEvent(evt, closePopup);
   });
 
   // функция изменения цвета плаща
   var onCoatClick = function () {
-    var color = window.utils.COAT_COLORS[window.utils.getRandomIndex(window.utils.COAT_COLORS.length)];
+    var color = window.setup.COAT_COLORS[window.setup.getRandomIndex(window.setup.COAT_COLORS.length)];
     userCoat.style.fill = color;
     userCoatElement.value = color;
   };
 
   // функция изменения цвета глаз
   var onEyesClick = function () {
-    var color = window.utils.EYES_COLORS[window.utils.getRandomIndex(window.utils.EYES_COLORS.length)];
+    var color = window.setup.EYES_COLORS[window.setup.getRandomIndex(window.setup.EYES_COLORS.length)];
     userEyes.style.fill = color;
     userEyesElement.value = color;
   };
 
   // функция-обработчик нажатия на фаербол
   var onFireballClick = function () {
-    var color = window.utils.FIREBALL_COLORS[window.utils.getRandomIndex(window.utils.FIREBALL_COLORS.length)];
+    var color = window.setup.FIREBALL_COLORS[window.setup.getRandomIndex(window.setup.FIREBALL_COLORS.length)];
     userFireball.style.background = color;
     userFireballElement.value = color;
   };
