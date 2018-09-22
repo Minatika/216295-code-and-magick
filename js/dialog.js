@@ -14,7 +14,12 @@
   var userEyesElement = userDialog.querySelector('.setup-player input[name=eyes-color]');
   var userFireball = userDialog.querySelector('.setup-fireball-wrap');
   var userFireballElement = userDialog.querySelector('.setup-fireball-wrap input[name=fireball-color]');
+  var uploadElement = userDialog.querySelector('.upload');
 
+  var PositionUserDialog = {
+    x: userDialog.style.left,
+    y: userDialog.style.top
+  };
 
   // функция-обработчик нажатия на Esc
   var onPopupEscPress = function (evt) {
@@ -23,6 +28,8 @@
 
   // функция открывает окно персонажа
   var openPopup = function () {
+    userDialog.style.left = PositionUserDialog.x;
+    userDialog.style.top = PositionUserDialog.y;
     userDialog.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
   };
@@ -83,6 +90,50 @@
     userFireballElement.value = color;
   };
 
+  // функция-обработчик захвата изображения пользователя
+  var onUserPicMouseDown = function (evt) {
+    evt.preventDefault();
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var dragged = false;
+
+    var onUserPicMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      dragged = true;
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      userDialog.style.top = (userDialog.offsetTop - shift.y) + 'px';
+      userDialog.style.left = (userDialog.offsetLeft - shift.x) + 'px';
+    };
+
+    var onUserPicMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onUserPicMouseMove);
+      document.removeEventListener('mouseup', onUserPicMouseUp);
+      if (dragged) {
+        var onClickPreventDefault = function (clickEvt) {
+          clickEvt.preventDefault();
+          uploadElement.removeEventListener('click', onClickPreventDefault);
+        };
+        uploadElement.addEventListener('click', onClickPreventDefault);
+      }
+    };
+
+    document.addEventListener('mousemove', onUserPicMouseMove);
+    document.addEventListener('mouseup', onUserPicMouseUp);
+  };
+
   // обработчик клика по плащу
   userCoat.addEventListener('click', onCoatClick);
 
@@ -91,4 +142,7 @@
 
   // обработчик клика по фаерболу
   userFireball.addEventListener('click', onFireballClick);
+
+  // обработчик нажатия на uploadElement
+  uploadElement.addEventListener('mousedown', onUserPicMouseDown);
 })();
