@@ -26,26 +26,6 @@
     return Math.floor(Math.random() * max);
   };
 
-  // функция возвращает объект wizard
-  var getWizardObject = function () {
-    var wizard = {
-      name: wizardsParams.NAMES[getRandomIndex(wizardsParams.NAMES.length)] + ' ' +
-            wizardsParams.SURNAMES[getRandomIndex(wizardsParams.SURNAMES.length)],
-      coatColor: wizardsParams.COAT_COLORS[getRandomIndex(wizardsParams.COAT_COLORS.length)],
-      eyesColor: wizardsParams.EYES_COLORS[getRandomIndex(wizardsParams.EYES_COLORS.length)]
-    };
-    return wizard;
-  };
-
-  // функция заполнения массива похожих персонажей
-  var getWizards = function (count) {
-    var arr = [];
-    for (var i = 0; i < count; i++) {
-      arr.push(getWizardObject());
-    }
-    return arr;
-  };
-
   // функция создания DOM-элементов и заполнения их данными из массива
   var renderWizard = function (wizard) {
     var wizardElement = document.querySelector('#similar-wizard-template')
@@ -69,20 +49,7 @@
     similarElement.classList.remove('hidden');
   };
 
-  // функция добавляет в дом сообщение с ошибкой от сервера
-  var onError = function (errorMessage) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
-
-    node.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', node);
-  };
-
-  window.backend.load(onLoad, onError);
+  window.backend.load(onLoad, window.utils.onError);
 
   // объект с экспортируемыми значениями в window
   window.setup = {

@@ -136,14 +136,14 @@
   };
 
   // функция-коллбэк скрывает диалог
-  var onHideDialog = function () {
+  var onCloseDialog = function () {
     userDialog.classList.add('hidden');
   };
 
   // функция-обработчик отправки формы
   var onFormSubmit = function (evt) {
-    window.backend.save(new FormData(formElement), onHideDialog);
     evt.preventDefault();
+    window.backend.save(new FormData(formElement), onCloseDialog, window.utils.onError);
   };
 
   // обработчик отправки данных формы
